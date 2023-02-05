@@ -1,10 +1,10 @@
 function add_glow_to_player() {
   var glow_geometry = new THREE.SphereGeometry(
-    player_radius - 1,
-    player_segments - 1,
-    player_segments - 1
+    1,
+    1,
+    1
   );
-  var glow_material = new THREE.MeshLambertMaterial({ color: 0x000088 });
+  var glow_material = new THREE.MeshLambertMaterial({ color: 'white' });
   glow_mesh = new THREE.Mesh(glow_geometry, glow_material);
   glow_mesh.position = player.position;
 
@@ -16,7 +16,7 @@ function add_glow_to_player() {
     map: new THREE.ImageUtils.loadTexture("./images/glow.png"),
     useScreenCoordinates: false,
     alignment: THREE.SpriteAlignment.center,
-    color: 0x0000ff,
+    color: 'blue',
     transparent: false,
     blending: THREE.AdditiveBlending,
   });
@@ -36,7 +36,7 @@ function add_player() {
 }
 
 function apply_player_outline_effect() {
-  var outline_color = "red";
+  var outline_color = "teal";
   var thickness = 1.05;
 
   var material = new THREE.MeshBasicMaterial({
@@ -80,7 +80,7 @@ function add_camera() {
   var w = window.innerWidth,
     h = window.innerHeight;
 
-  var VIEW_ANGLE = 45;
+  var VIEW_ANGLE = 95;
   var ASPECT = w / h;
   var NEAR = 0.1;
   var FAR = 10000;
@@ -169,7 +169,9 @@ function add_lights() {
 }
 
 function add_plane_track() {
-  var trackTexture = new THREE.ImageUtils.loadTexture("./images/race_track.png");
+  var trackTexture = new THREE.ImageUtils.loadTexture(
+    "./images/race_track.png"
+  );
   trackTexture.wrapS = trackTexture.wrapT = THREE.RepeatWrapping;
   trackTexture.repeat.set(1, 1);
 
@@ -181,11 +183,12 @@ function add_plane_track() {
   var trackGeometry = new THREE.PlaneGeometry(2177, 1088, 1, 1);
   track = new THREE.Mesh(trackGeometry, trackMaterial);
   track.position.x = -300;
-  track.position.y = 0;
+  track.position.y = -5;
   track.position.z = -350;
 
   track.rotation.x = -Math.PI / 2;
   scene.add(track);
+  collidableMeshList.push(track);
 }
 
 function add_axis() {
@@ -220,11 +223,14 @@ function animate() {
   update();
 }
 
+function apply_gravity() {
+  player.translateY(GRAVITY);
+}
+
 function update() {
   keyboard.update();
 
   var delta = clock.getDelta();
-  // player.translateY(-0.1);
   var moveDistance = steering_speed * delta;
   var rotateAngle = (Math.PI / 2) * delta + steering_bias / 100;
   var rotation_matrix = new THREE.Matrix4().identity();
@@ -263,7 +269,9 @@ function update() {
     );
 
   glow_mesh.position = player.position;
-
+  if (!collision_detection()) {
+    apply_gravity();
+  };
   stats.update();
 }
 
@@ -292,5 +300,22 @@ function render() {
 
   if (show_minimap) {
     renderer.render(scene, minimap);
+  }
+}
+
+function collision_detection() {
+  var originPoint = player.position.clone();
+
+  for (var vertexIndex = 0; vertexIndex < player.geometry.vertices.length; vertexIndex++ ) {
+    var localVertex = player.geometry.vertices[vertexIndex].clone();
+    var globalVertex = localVertex.applyMatrix4(player.matrix);
+    var directionVector = globalVertex.sub(player.position);
+
+    var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
+
+    var collisionResults = ray.intersectObjects(collidableMeshList);
+    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+      return true;
+    }
   }
 }

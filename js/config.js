@@ -25,3 +25,6 @@ var minimap,
   minimap_width = 500,
   minimap_height = 500,
   minimap_composer;
+
+var collidableMeshList;
+const GRAVITY = -1;

@@ -1,8 +1,10 @@
-
 this.main();
 this.animate();
 
+
 function main() {
+  collidableMeshList = [];
+
   scene = new THREE.Scene();
 
   add_camera();
@@ -11,7 +13,7 @@ function main() {
   add_controls();
   add_lights();
   add_plane_track();
-  // add_skybox();
+  add_skybox();
   add_stats();
   // add_axis();
   add_player();
