@@ -1,10 +1,6 @@
 function add_glow_to_player() {
-  var glow_geometry = new THREE.SphereGeometry(
-    1,
-    1,
-    1
-  );
-  var glow_material = new THREE.MeshLambertMaterial({ color: 'white' });
+  var glow_geometry = new THREE.SphereGeometry(1, 1, 1);
+  var glow_material = new THREE.MeshLambertMaterial({ color: "white" });
   glow_mesh = new THREE.Mesh(glow_geometry, glow_material);
   glow_mesh.position = player.position;
 
@@ -16,7 +12,7 @@ function add_glow_to_player() {
     map: new THREE.ImageUtils.loadTexture("./images/glow.png"),
     useScreenCoordinates: false,
     alignment: THREE.SpriteAlignment.center,
-    color: 'blue',
+    color: "blue",
     transparent: false,
     blending: THREE.AdditiveBlending,
   });
@@ -50,9 +46,9 @@ function apply_player_outline_effect() {
 }
 
 function position_player_on_start() {
-  player.rotation.y = Math.PI / 2;
-  // player.position.y = player.geometry.height / 2;
-  player.position.set(0, player_radius, 0);
+  player.position.set(0, 100, 0);
+  player.rotation.set(0, 0, 0);
+  player.rotateOnAxis(new THREE.Vector3(0, 1, 0), +Math.PI / 2);
 }
 
 function add_controls() {
@@ -187,8 +183,8 @@ function add_plane_track() {
   track.position.z = -350;
 
   track.rotation.x = -Math.PI / 2;
-  scene.add(track);
   collidableMeshList.push(track);
+  scene.add(track);
 }
 
 function add_axis() {
@@ -254,8 +250,7 @@ function update() {
   }
 
   if (keyboard.pressed("R")) {
-    player.position.set(0, 25.1, 0);
-    player.rotation.set(0, 0, 0);
+    position_player_on_start();
   }
 
   camera.position
@@ -268,11 +263,20 @@ function update() {
       )
     );
 
-  glow_mesh.position = player.position;
+  // glow_mesh.position = player.position;
+
   if (!collision_detection()) {
     apply_gravity();
-  };
+  }
   stats.update();
+
+  if (player.position.y < -100) {
+    game_over();
+  }
+}
+
+function game_over() {
+  position_player_on_start();
 }
 
 function render() {
@@ -306,16 +310,27 @@ function render() {
 function collision_detection() {
   var originPoint = player.position.clone();
 
-  for (var vertexIndex = 0; vertexIndex < player.geometry.vertices.length; vertexIndex++ ) {
+  for (
+    var vertexIndex = 0;
+    vertexIndex < player.geometry.vertices.length;
+    vertexIndex++
+  ) {
     var localVertex = player.geometry.vertices[vertexIndex].clone();
     var globalVertex = localVertex.applyMatrix4(player.matrix);
     var directionVector = globalVertex.sub(player.position);
 
-    var ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-
+    var ray = new THREE.Raycaster(
+      originPoint,
+      directionVector.clone().normalize()
+    );
     var collisionResults = ray.intersectObjects(collidableMeshList);
-    if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length()) {
+    if (
+      collisionResults.length > 0 &&
+      collisionResults[0].distance - player_radius / 2 <
+        directionVector.length()
+    ) {
       return true;
     }
   }
+  return false;
 }

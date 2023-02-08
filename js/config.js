@@ -27,4 +27,4 @@ var minimap,
   minimap_composer;
 
 var collidableMeshList;
-const GRAVITY = -1;
+const GRAVITY = -5;
