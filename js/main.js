@@ -18,7 +18,7 @@ function main() {
   // add_axis();
   add_player();
 
-  add_glow_to_player();
+  // add_glow_to_player();
 
   if (show_minimap) {
     add_minimap();

@@ -36,8 +36,8 @@ function add_player() {
 }
 
 function apply_player_outline_effect() {
-  var outline_color = "teal";
-  var thickness = 1.05;
+  var outline_color = "purple";
+  var thickness = 1.08;
 
   var material = new THREE.MeshBasicMaterial({
     color: outline_color,
@@ -80,7 +80,7 @@ function add_camera() {
   var w = window.innerWidth,
     h = window.innerHeight;
 
-  var VIEW_ANGLE = 95;
+  var VIEW_ANGLE = 70;
   var ASPECT = w / h;
   var NEAR = 0.1;
   var FAR = 10000;

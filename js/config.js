@@ -20,7 +20,7 @@ var player_geometry = new THREE.SphereGeometry(
 var player_material = new THREE.MeshNormalMaterial();
 // var player_material = new THREE.MeshBasicMaterial({ color: 0xffff00 });
 
-var show_minimap = false;
+var show_minimap = true;
 var minimap,
   minimap_width = 500,
   minimap_height = 500,
