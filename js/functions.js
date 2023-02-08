@@ -1,28 +1,26 @@
 function add_glow_to_player() {
   var glow_geometry = new THREE.SphereGeometry(1, 1, 1);
-  var glow_material = new THREE.MeshLambertMaterial({ color: "white" });
+  var glow_material = new THREE.MeshLambertMaterial({ color: "black" });
   glow_mesh = new THREE.Mesh(glow_geometry, glow_material);
   glow_mesh.position = player.position;
-
   scene.add(glow_mesh);
 
-  // SUPER SIMPLE GLOW EFFECT
-  // use sprite because it appears the same from all angles
   var glowSpriteMaterial = new THREE.SpriteMaterial({
     map: new THREE.ImageUtils.loadTexture("./images/glow.png"),
     useScreenCoordinates: false,
     alignment: THREE.SpriteAlignment.center,
-    color: "blue",
-    transparent: false,
+    color: "purple",
+    transparent: true,
     blending: THREE.AdditiveBlending,
   });
   var glow_sprite = new THREE.Sprite(glowSpriteMaterial);
-  glow_sprite.scale.set(80, 80, 1.0);
+  glow_sprite.scale.set(40, 40, 1.0);
   glow_mesh.add(glow_sprite); // this centers the glow at the mesh
 }
 
 function add_player() {
   player = new THREE.Mesh(player_geometry, player_material);
+  player.castShadow = true;
   position_player_on_start();
   scene.add(player);
 
@@ -57,7 +55,6 @@ function add_controls() {
 
 function add_events() {
   THREEx.WindowResize(renderer, camera);
-  THREEx.FullScreen.bindKey({ charCode: "m".charCodeAt(0) });
 }
 
 function add_renderer() {
@@ -159,7 +156,7 @@ function add_stats() {
 }
 
 function add_lights() {
-  var light = new THREE.PointLight(0xffffff);
+  var light = new THREE.PointLight('white');
   light.position.set(100, 250, 100);
   scene.add(light);
 }
@@ -224,6 +221,9 @@ function apply_gravity() {
 }
 
 function update() {
+  if (game_over) {
+    return;
+  }
   keyboard.update();
 
   var delta = clock.getDelta();
@@ -252,6 +252,9 @@ function update() {
   if (keyboard.pressed("R")) {
     position_player_on_start();
   }
+  else if (keyboard.pressed("M")) {
+    show_minimap = !show_minimap;
+  }
 
   camera.position
     .copy(control.center)
@@ -263,36 +266,33 @@ function update() {
       )
     );
 
-  // glow_mesh.position = player.position;
-
   if (!collision_detection()) {
     apply_gravity();
   }
   stats.update();
 
   if (player.position.y < -100) {
-    game_over();
+    transition_game_over();
   }
 }
 
-function game_over() {
+function transition_game_over() {
+  var elemDiv = document.createElement("div");
+  elemDiv.textContent = "Game Over";
+  elemDiv.id = "info"
+  document.body.appendChild(elemDiv);
+  // d.appendChild("<div id='info'>Game Over</div")
   position_player_on_start();
+  game_over = true
 }
 
 function render() {
   var w = window.innerWidth,
     h = window.innerHeight;
 
-  // setViewport parameters:
-  //  lower_left_x, lower_left_y, viewport_width, viewport_height
-
-  // full display
   renderer.setViewport(0, 0, w, h);
   renderer.render(scene, camera);
 
-  if (show_minimap) {
-    composer.render();
-  }
   renderer.clear(false, true, false);
 
   renderer.setViewport(
@@ -302,6 +302,7 @@ function render() {
     minimap_height
   );
 
+  // composer.render();
   if (show_minimap) {
     renderer.render(scene, minimap);
   }

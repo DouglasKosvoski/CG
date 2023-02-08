@@ -7,10 +7,29 @@
       name="viewport"
       content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
+
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #info {
+        position: absolute;
+        font-size: 164px;
+        color: red;
+        font-weight: bold;
+        padding-top: 14rem;
+        width: 100vw;
+        height: 100vh;
+        background-color: #00000080;
+        text-align: center;
+        z-index: 100;
+        display: block;
+      }
+    </style>
   </head>
 
   <body>
-
     <div id="ThreeJS" style="position: absolute; left: 0px; top: 0px"></div>
 
     <script src="./js/threejs/Three.js"></script>
@@ -36,6 +55,17 @@
     <link rel="stylesheet" href="css/info.css" />
     <script src="./js/threejs/info.js"></script>
 
+    <!-- load fonts -->
+    <!-- <script src="fonts/gentilis_bold.typeface.js"></script>
+    <script src="fonts/gentilis_regular.typeface.js"></script>
+    <script src="fonts/optimer_bold.typeface.js"></script>
+    <script src="fonts/optimer_regular.typeface.js"></script>
+    <script src="fonts/helvetiker_bold.typeface.js"></script>
+    <script src="fonts/helvetiker_regular.typeface.js"></script>
+    <script src="fonts/droid_sans_regular.typeface.js"></script>
+    <script src="fonts/droid_sans_bold.typeface.js"></script>
+    <script src="fonts/droid_serif_regular.typeface.js"></script>
+    <script src="fonts/droid_serif_bold.typeface.js"></script> -->
 
     <script src="./js/config.js"></script>
     <script src="./js/functions.js"></script>
