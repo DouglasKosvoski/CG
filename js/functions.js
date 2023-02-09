@@ -30,7 +30,7 @@ function add_player() {
 }
 
 function apply_player_outline_effect() {
-  var outline_color = "purple";
+  var outline_color = "blue";
   var thickness = 1.08;
 
   var material = new THREE.MeshBasicMaterial({
@@ -44,9 +44,9 @@ function apply_player_outline_effect() {
 }
 
 function position_player_on_start() {
-  player.position.set(0, 100, 0);
+  player.position.set(350, 100, 0);
   player.rotation.set(0, 0, 0);
-  player.rotateOnAxis(new THREE.Vector3(0, 1, 0), +Math.PI / 2);
+  // player.rotateOnAxis(new THREE.Vector3(0, 1, 0), +Math.PI / 2);
 }
 
 function add_controls() {
@@ -159,6 +159,29 @@ function add_lights() {
   var light = new THREE.PointLight('white');
   light.position.set(100, 250, 100);
   scene.add(light);
+}
+
+function add_track_model() {
+  	var loader = new THREE.JSONLoader();
+    loader.load("models/race_track.json", addModelToScene);
+}
+
+function addModelToScene(geometry) {
+  // var material = new THREE.MeshBasicMaterial({
+  //   color: "gray",
+  // });
+  var material = new THREE.MeshNormalMaterial();
+  track = new THREE.Mesh(geometry, material);
+  track.scale.set(500, 500, 500);
+  track.position.set(0-100, 0, 0);
+  collidableMeshList.push(track);
+  scene.add(track);
+
+  track2 = new THREE.Mesh(geometry, material);
+  track2.scale.set(500, 500, 500);
+  track2.position.set(500-100, 0, 0);
+  collidableMeshList.push(track2);
+  scene.add(track2);
 }
 
 function add_plane_track() {
