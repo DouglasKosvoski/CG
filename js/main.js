@@ -25,8 +25,5 @@ function main() {
   }
 
   control = new THREE.OrbitControls(camera, scene);
-	scene.fog = new THREE.FogExp2('white', 0.0001);
-
-
-	
+  scene.fog = new THREE.FogExp2('white', 0.0001);
 }
